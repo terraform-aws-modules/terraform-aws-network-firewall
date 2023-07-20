@@ -22,19 +22,19 @@ locals {
 # network firewall Module
 ################################################################################
 
-module "network_firewall" {
-  source = "../.."
+# module "network_firewall" {
+#   source = "../.."
 
-  create = false
+#   create = false
 
-  tags = local.tags
-}
+#   tags = local.tags
+# }
 
-module "network_firewall_disabled" {
-  source = "../.."
+# module "network_firewall_disabled" {
+#   source = "../.."
 
-  create = false
-}
+#   create = false
+# }
 
 ################################################################################
 # Supporting Resources
@@ -42,7 +42,7 @@ module "network_firewall_disabled" {
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 4.0"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.vpc_cidr

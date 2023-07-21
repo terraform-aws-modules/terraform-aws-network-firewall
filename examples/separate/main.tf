@@ -32,11 +32,11 @@ module "network_firewall" {
   description = "Example network firewall"
 
   # Only for example
-  delete_protection = false
-
-  firewall_policy_arn               = module.network_firewall_policy.arn
+  delete_protection                 = false
   firewall_policy_change_protection = false
   subnet_change_protection          = false
+
+  firewall_policy_arn = module.network_firewall_policy.arn
 
   vpc_id = module.vpc.vpc_id
   subnet_mapping = { for i in range(0, local.num_azs) :

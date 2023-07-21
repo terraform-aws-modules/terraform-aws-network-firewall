@@ -1,5 +1,5 @@
 variable "create" {
-  description = "Controls if Network Firewall resources should be created"
+  description = "Controls if resources should be created"
   type        = bool
   default     = true
 }

@@ -7,34 +7,30 @@ Terraform module which creates AWS Network Firewall policy resources.
 See [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples) directory for working examples to reference:
 
 ```hcl
-module "network_firewall" {
+module "network_firewall_policy" {
   source = "terraform-aws-modules/network-firewall/aws//modules/policy"
 
-  # Policy
-  policy_description = "Example network firewall policy"
-  policy_stateful_rule_group_reference = [
-    { rule_group_key = "stateful_ex1" },
-    { rule_group_key = "stateful_ex2" },
-    { rule_group_key = "stateful_ex3" },
-    { rule_group_key = "stateful_ex4" },
-  ]
+  name        = "example"
+  description = "Example network firewall policy"
 
-  policy_stateless_default_actions          = ["aws:pass"]
-  policy_stateless_fragment_default_actions = ["aws:drop"]
-  policy_stateless_rule_group_reference = [
-    {
-      priority       = 1
-      rule_group_key = "stateless_ex1"
-    },
-  ]
+  stateful_rule_group_reference = {
+    one = {
+      priority     = 0
+      resource_arn = "arn:aws:network-firewall:us-east-1:1234567890:stateful-rulegroup/example"
+    }
+  }
 
-  # Resource Policy
-  create_firewall_policy_resource_policy     = true
-  attach_firewall_policy_resource_policy     = true
-  firewall_policy_resource_policy_principals = ["arn:aws:iam::123456789012:root"]
+  stateless_default_actions          = ["aws:pass"]
+  stateless_fragment_default_actions = ["aws:drop"]
+  stateless_rule_group_reference = {
+    one = {
+      priority     = 0
+      resource_arn = "arn:aws:network-firewall:us-east-1:1234567890:stateless-rulegroup/example"
+    }
+  }
 
   tags = {
-    Owner       = "user"
+    Terraform   = "true"
     Environment = "dev"
   }
 }

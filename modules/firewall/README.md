@@ -10,26 +10,40 @@ See [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tre
 module "network_firewall" {
   source = "terraform-aws-modules/network-firewall/aws//modules/firewall"
 
-  name        = "Example"
+  # Firewall
+  name        = "exampple"
   description = "Example network firewall"
 
-  vpc_id         = "vpc-12345678"
-  subnet_mapping = ["subnet-12345678", "subnet-87654321"]
+  vpc_id = "vpc-1234556abcdef"
+  subnet_mapping = {
+    subnet1 = {
+      subnet_id       = "subnet-abcde012"
+      ip_address_type = "IPV4"
+    }
+    subnet2 = {
+      subnet_id       = "subnet-bcde012a"
+      ip_address_type = "IPV4"
+    }
+    subnet2 = {
+      subnet_id       = "subnet-fghi345a"
+      ip_address_type = "IPV4"
+    }
+  }
 
   # Logging configuration
   create_logging_configuration = true
   logging_configuration_destination_config = [
     {
       log_destination = {
-        logGroup = "/aws/networkfirewall/Example"
+        logGroup = "/aws/network-firewall/example"
       }
       log_destination_type = "CloudWatchLogs"
       log_type             = "ALERT"
     },
     {
       log_destination = {
-        bucketName = "network-firewall-example-logs"
-        prefix     = local.name
+        bucketName = "s3-example-bucket-firewall-flow-logs"
+        prefix     = "example"
       }
       log_destination_type = "S3"
       log_type             = "FLOW"
@@ -37,7 +51,7 @@ module "network_firewall" {
   ]
 
   tags = {
-    Owner       = "user"
+    Terraform   = "true"
     Environment = "dev"
   }
 }

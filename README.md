@@ -2,15 +2,76 @@
 
 Terraform module which creates AWS network firewall resources.
 
+[![SWUbanner](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://github.com/vshymanskyy/StandWithUkraine/blob/main/docs/README.md)
+
 ## Usage
 
-See [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples) directory for working examples to reference:
+This project supports creating resources through individual sub-modules for better support for RAM resource sharing, or through a single module that creates both the firewall and firewall policy resources.
+See the respective sub-module directory for more details and example usage.
 
-### Firewall & Firewall Policy
 ```hcl
 module "network_firewall" {
-  source = "clowdhaus/network-firewall/aws"
+  source = "terraform-aws-modules/network-firewall/aws"
 
+  # Firewall
+  name        = "example"
+  description = "Example network firewall"
+
+  vpc_id = "vpc-1234556abcdef"
+  subnet_mapping = {
+    subnet1 = {
+      subnet_id       = "subnet-abcde012"
+      ip_address_type = "IPV4"
+    }
+    subnet2 = {
+      subnet_id       = "subnet-bcde012a"
+      ip_address_type = "IPV4"
+    }
+    subnet2 = {
+      subnet_id       = "subnet-fghi345a"
+      ip_address_type = "IPV4"
+    }
+  }
+
+  # Logging configuration
+  create_logging_configuration = true
+  logging_configuration_destination_config = [
+    {
+      log_destination = {
+        logGroup = "/aws/network-firewall/example"
+      }
+      log_destination_type = "CloudWatchLogs"
+      log_type             = "ALERT"
+    },
+    {
+      log_destination = {
+        bucketName = "s3-example-bucket-firewall-flow-logs"
+        prefix     = "example"
+      }
+      log_destination_type = "S3"
+      log_type             = "FLOW"
+    }
+  ]
+
+  # Policy
+  policy_name        = "example"
+  policy_description = "Example network firewall policy"
+
+  policy_stateful_rule_group_reference = {
+    one = {
+      priority     = 0
+      resource_arn = "arn:aws:network-firewall:us-east-1:1234567890:stateful-rulegroup/example"
+    }
+  }
+
+  policy_stateless_default_actions          = ["aws:pass"]
+  policy_stateless_fragment_default_actions = ["aws:drop"]
+  policy_stateless_rule_group_reference = {
+    one = {
+      priority     = 0
+      resource_arn = "arn:aws:network-firewall:us-east-1:1234567890:stateless-rulegroup/example"
+    }
+  }
 
   tags = {
     Terraform   = "true"
@@ -19,11 +80,13 @@ module "network_firewall" {
 }
 ```
 
+
 ## Examples
 
 Examples codified under the [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples) are intended to give users references for how to use the module(s) as well as testing/validating changes to the source code of the module. If contributing to the project, please be sure to make any appropriate updates to the relevant examples to allow maintainers to test your changes and to keep the examples up to date for users. Thank you!
 
 - [Complete](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples/complete)
+- [Separate](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples/separate)
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements

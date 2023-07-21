@@ -57,7 +57,25 @@ No inputs.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_firewall_arn"></a> [firewall\_arn](#output\_firewall\_arn) | The Amazon Resource Name (ARN) that identifies the firewall |
+| <a name="output_firewall_id"></a> [firewall\_id](#output\_firewall\_id) | The Amazon Resource Name (ARN) that identifies the firewall |
+| <a name="output_firewall_logging_configuration_id"></a> [firewall\_logging\_configuration\_id](#output\_firewall\_logging\_configuration\_id) | The Amazon Resource Name (ARN) of the associated firewall |
+| <a name="output_firewall_policy_arn"></a> [firewall\_policy\_arn](#output\_firewall\_policy\_arn) | The Amazon Resource Name (ARN) that identifies the firewall policy |
+| <a name="output_firewall_policy_id"></a> [firewall\_policy\_id](#output\_firewall\_policy\_id) | The Amazon Resource Name (ARN) that identifies the firewall policy |
+| <a name="output_firewall_policy_resource_policy_id"></a> [firewall\_policy\_resource\_policy\_id](#output\_firewall\_policy\_resource\_policy\_id) | The Amazon Resource Name (ARN) of the firewall policy associated with the resource policy |
+| <a name="output_firewall_policy_update_token"></a> [firewall\_policy\_update\_token](#output\_firewall\_policy\_update\_token) | A string token used when updating a firewall policy |
+| <a name="output_firewall_rule_group_stateful_arn"></a> [firewall\_rule\_group\_stateful\_arn](#output\_firewall\_rule\_group\_stateful\_arn) | The Amazon Resource Name (ARN) that identifies the rule group |
+| <a name="output_firewall_rule_group_stateful_id"></a> [firewall\_rule\_group\_stateful\_id](#output\_firewall\_rule\_group\_stateful\_id) | The Amazon Resource Name (ARN) that identifies the rule group |
+| <a name="output_firewall_rule_group_stateful_resource_policy_id"></a> [firewall\_rule\_group\_stateful\_resource\_policy\_id](#output\_firewall\_rule\_group\_stateful\_resource\_policy\_id) | The Amazon Resource Name (ARN) of the rule group associated with the resource policy |
+| <a name="output_firewall_rule_group_stateful_update_token"></a> [firewall\_rule\_group\_stateful\_update\_token](#output\_firewall\_rule\_group\_stateful\_update\_token) | A string token used when updating the rule group |
+| <a name="output_firewall_rule_group_stateless_arn"></a> [firewall\_rule\_group\_stateless\_arn](#output\_firewall\_rule\_group\_stateless\_arn) | The Amazon Resource Name (ARN) that identifies the rule group |
+| <a name="output_firewall_rule_group_stateless_id"></a> [firewall\_rule\_group\_stateless\_id](#output\_firewall\_rule\_group\_stateless\_id) | The Amazon Resource Name (ARN) that identifies the rule group |
+| <a name="output_firewall_rule_group_stateless_resource_policy_id"></a> [firewall\_rule\_group\_stateless\_resource\_policy\_id](#output\_firewall\_rule\_group\_stateless\_resource\_policy\_id) | The Amazon Resource Name (ARN) of the rule group associated with the resource policy |
+| <a name="output_firewall_rule_group_stateless_update_token"></a> [firewall\_rule\_group\_stateless\_update\_token](#output\_firewall\_rule\_group\_stateless\_update\_token) | A string token used when updating the rule group |
+| <a name="output_firewall_status"></a> [firewall\_status](#output\_firewall\_status) | Nested list of information about the current status of the firewall |
+| <a name="output_firewall_update_token"></a> [firewall\_update\_token](#output\_firewall\_update\_token) | A string token used when updating a firewall |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 Apache-2.0 Licensed. See [LICENSE](https://github.com/clowdhaus/terraform-aws-network-firewall/blob/main/LICENSE).

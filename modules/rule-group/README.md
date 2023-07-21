@@ -1,235 +1,106 @@
-# AWS Network Firewall Terraform Module
+# AWS Network Firewall Rule Group Terraform Module
 
-Terraform module which creates AWS Network Firewall resources.
+Terraform module which creates AWS Network Firewall rule group resources.
 
 ## Usage
 
-See [`examples`](https://github.com/clowdhaus/terraform-aws-vpc-v5/tree/main/examples) directory for working examples to reference:
+See [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples) directory for working examples to reference:
+
+### Stateful
 
 ```hcl
-module "network_firewall" {
-  source = "terraform-aws-modules/vpc/aws//modules/network-firewall"
+module "network_firewall_rule_group_stateful" {
+  source = "terraform-aws-modules/network-firewall/aws//modules/rule-group"
 
-  name        = "Example"
-  description = "Example network firewall"
+  name        = "example-stateful"
+  description = "Stateful Inspection for denying access to a domain"
+  type        = "STATEFUL"
+  capacity    = 100
 
-  vpc_id         = "vpc-12345678"
-  subnet_mapping = ["subnet-12345678", "subnet-87654321"]
-
-  # Policy
-  policy_description = "Example network firewall policy"
-  policy_stateful_rule_group_reference = [
-    { rule_group_key = "stateful_ex1" },
-    { rule_group_key = "stateful_ex2" },
-    { rule_group_key = "stateful_ex3" },
-    { rule_group_key = "stateful_ex4" },
-  ]
-
-  policy_stateless_default_actions          = ["aws:pass"]
-  policy_stateless_fragment_default_actions = ["aws:drop"]
-  policy_stateless_rule_group_reference = [
-    {
-      priority       = 1
-      rule_group_key = "stateless_ex1"
-    },
-  ]
-
-  # Rule Group(s)
-  rule_groups = {
-
-    stateful_ex1 = {
-      name        = "Example-stateful-ex1"
-      description = "Stateful Inspection for denying access to a domain"
-      type        = "STATEFUL"
-      capacity    = 100
-
-      rule_group = {
-        rules_source = {
-          rules_source_list = {
-            generated_rules_type = "DENYLIST"
-            target_types         = ["HTTP_HOST"]
-            targets              = ["test.example.com"]
-          }
-        }
+  rule_group = {
+    rules_source = {
+      rules_source_list = {
+        generated_rules_type = "DENYLIST"
+        target_types         = ["HTTP_HOST"]
+        targets              = ["test.example.com"]
       }
-
-      # Resource Policy - Rule Group
-      create_resource_policy     = true
-      attach_resource_policy     = true
-      resource_policy_principals = ["arn:aws:iam::123456789012:root"]
-    }
-
-    stateful_ex2 = {
-      name        = "Example-stateful-ex2"
-      description = "Stateful Inspection for permitting packets from a source IP address"
-      type        = "STATEFUL"
-      capacity    = 50
-
-      rule_group = {
-        rules_source = {
-          stateful_rule = [{
-            action = "PASS"
-            header = {
-              destination      = "ANY"
-              destination_port = "ANY"
-              protocol         = "HTTP"
-              direction        = "ANY"
-              source_port      = "ANY"
-              source           = "1.2.3.4"
-            }
-            rule_option = [{
-              keyword = "sid:1"
-            }]
-          }]
-        }
-      }
-    }
-
-    stateful_ex3 = {
-      name        = "Example-stateful-ex3"
-      description = "Stateful Inspection for blocking packets from going to an intended destination"
-      type        = "STATEFUL"
-      capacity    = 100
-
-      rule_group = {
-        rules_source = {
-          stateful_rule = [{
-            action = "DROP"
-            header = {
-              destination      = "124.1.1.24/32"
-              destination_port = 53
-              direction        = "ANY"
-              protocol         = "TCP"
-              source           = "1.2.3.4/32"
-              source_port      = 53
-            }
-            rule_option = [{
-              keyword = "sid:1"
-            }]
-          }]
-        }
-      }
-    }
-
-    stateful_ex4 = {
-      name        = "Example-stateful-ex4"
-      description = "Stateful Inspection from rule group specifications using rule variables and Suricata format rules"
-      type        = "STATEFUL"
-      capacity    = 100
-
-      rule_group = {
-        rule_variables = {
-          ip_sets = [{
-            key = "WEBSERVERS_HOSTS"
-            ip_set = {
-              definition = ["10.0.0.0/16", "10.0.1.0/24", "192.168.0.0/16"]
-            }
-            }, {
-            key = "EXTERNAL_HOST"
-            ip_set = {
-              definition = ["1.2.3.4/32"]
-            }
-          }]
-          port_sets = [{
-            key = "HTTP_PORTS"
-            port_set = {
-              definition = ["443", "80"]
-            }
-          }]
-        }
-        rules_source = {
-          rules_string = <<-EOT
-          alert icmp any any -> any any (msg: "Allowing ICMP packets"; sid:1; rev:1;)
-          pass icmp any any -> any any (msg: "Allowing ICMP packets"; sid:2; rev:1;)
-          EOT
-        }
-      }
-    }
-
-    stateless_ex1 = {
-      name        = "Example-stateless-ex1"
-      description = "Stateless Inspection with a Custom Action"
-      type        = "STATELESS"
-      capacity    = 100
-
-      rule_group = {
-        rules_source = {
-          stateless_rules_and_custom_actions = {
-            custom_action = [{
-              action_definition = {
-                publish_metric_action = {
-                  dimension = [{
-                    value = "2"
-                  }]
-                }
-              }
-              action_name = "ExampleMetricsAction"
-            }]
-            stateless_rule = [{
-              priority = 1
-              rule_definition = {
-                actions = ["aws:pass", "ExampleMetricsAction"]
-                match_attributes = {
-                  source = [{
-                    address_definition = "1.2.3.4/32"
-                  }]
-                  source_port = [{
-                    from_port = 443
-                    to_port   = 443
-                  }]
-                  destination = [{
-                    address_definition = "124.1.1.5/32"
-                  }]
-                  destination_port = [{
-                    from_port = 443
-                    to_port   = 443
-                  }]
-                  protocols = [6]
-                  tcp_flag = [{
-                    flags = ["SYN"]
-                    masks = ["SYN", "ACK"]
-                  }]
-                }
-              }
-            }]
-          }
-        }
-      }
-
-      # Resource Policy - Rule Group
-      create_resource_policy     = true
-      attach_resource_policy     = true
-      resource_policy_principals = ["arn:aws:iam::123456789012:root"]
     }
   }
 
-  # Resource Policy - Firewall Policy
-  create_firewall_policy_resource_policy     = true
-  attach_firewall_policy_resource_policy     = true
-  firewall_policy_resource_policy_principals = ["arn:aws:iam::123456789012:root"]
-
-  # Logging configuration
-  create_logging_configuration = true
-  logging_configuration_destination_config = [
-    {
-      log_destination = {
-        logGroup = "/aws/networkfirewall/Example"
-      }
-      log_destination_type = "CloudWatchLogs"
-      log_type             = "ALERT"
-    },
-    {
-      log_destination = {
-        bucketName = "network-firewall-example-logs"
-        prefix     = local.name
-      }
-      log_destination_type = "S3"
-      log_type             = "FLOW"
-    }
-  ]
+  # Resource Policy
+  create_resource_policy     = true
+  attach_resource_policy     = true
+  resource_policy_principals = ["arn:aws:iam::1234567890:root"]
 
   tags = {
-    Owner       = "user"
+    Terraform   = "true"
+    Environment = "dev"
+  }
+}
+```
+
+### Stateless
+
+```hcl
+module "network_firewall_rule_group_stateless" {
+  source = "terraform-aws-modules/network-firewall/aws//modules/rule-group"
+
+  name        = "example-stateless"
+  description = "Stateless Inspection with a Custom Action"
+  type        = "STATELESS"
+  capacity    = 100
+
+  rule_group = {
+    rules_source = {
+      stateless_rules_and_custom_actions = {
+        custom_action = [{
+          action_definition = {
+            publish_metric_action = {
+              dimension = [{
+                value = "2"
+              }]
+            }
+          }
+          action_name = "ExampleMetricsAction"
+        }]
+        stateless_rule = [{
+          priority = 1
+          rule_definition = {
+            actions = ["aws:pass", "ExampleMetricsAction"]
+            match_attributes = {
+              source = [{
+                address_definition = "1.2.3.4/32"
+              }]
+              source_port = [{
+                from_port = 443
+                to_port   = 443
+              }]
+              destination = [{
+                address_definition = "124.1.1.5/32"
+              }]
+              destination_port = [{
+                from_port = 443
+                to_port   = 443
+              }]
+              protocols = [6]
+              tcp_flag = [{
+                flags = ["SYN"]
+                masks = ["SYN", "ACK"]
+              }]
+            }
+          }
+        }]
+      }
+    }
+  }
+
+  # Resource Policy
+  create_resource_policy     = true
+  attach_resource_policy     = true
+  resource_policy_principals = ["arn:aws:iam::1234567890:root"]
+
+  tags = {
+    Terraform   = "true"
     Environment = "dev"
   }
 }
@@ -294,4 +165,4 @@ No modules.
 
 ## License
 
-Apache-2.0 Licensed. See [LICENSE](https://github.com/clowdhaus/terraform-aws-vpc-v5/blob/main/LICENSE).
+Apache-2.0 Licensed. See [LICENSE](https://github.com/clowdhaus/terraform-aws-network-firewall/blob/main/LICENSE).

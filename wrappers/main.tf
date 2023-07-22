@@ -1,0 +1,37 @@
+module "wrapper" {
+  source = "../"
+
+  for_each = var.items
+
+  create                                    = try(each.value.create, var.defaults.create, true)
+  tags                                      = try(each.value.tags, var.defaults.tags, {})
+  delete_protection                         = try(each.value.delete_protection, var.defaults.delete_protection, true)
+  description                               = try(each.value.description, var.defaults.description, "")
+  encryption_configuration                  = try(each.value.encryption_configuration, var.defaults.encryption_configuration, {})
+  firewall_policy_arn                       = try(each.value.firewall_policy_arn, var.defaults.firewall_policy_arn, "")
+  firewall_policy_change_protection         = try(each.value.firewall_policy_change_protection, var.defaults.firewall_policy_change_protection, null)
+  name                                      = try(each.value.name, var.defaults.name, "")
+  subnet_change_protection                  = try(each.value.subnet_change_protection, var.defaults.subnet_change_protection, true)
+  subnet_mapping                            = try(each.value.subnet_mapping, var.defaults.subnet_mapping, {})
+  vpc_id                                    = try(each.value.vpc_id, var.defaults.vpc_id, "")
+  create_logging_configuration              = try(each.value.create_logging_configuration, var.defaults.create_logging_configuration, false)
+  logging_configuration_destination_config  = try(each.value.logging_configuration_destination_config, var.defaults.logging_configuration_destination_config, [])
+  create_policy                             = try(each.value.create_policy, var.defaults.create_policy, true)
+  policy_description                        = try(each.value.policy_description, var.defaults.policy_description, null)
+  policy_encryption_configuration           = try(each.value.policy_encryption_configuration, var.defaults.policy_encryption_configuration, {})
+  policy_stateful_default_actions           = try(each.value.policy_stateful_default_actions, var.defaults.policy_stateful_default_actions, [])
+  policy_stateful_engine_options            = try(each.value.policy_stateful_engine_options, var.defaults.policy_stateful_engine_options, {})
+  policy_stateful_rule_group_reference      = try(each.value.policy_stateful_rule_group_reference, var.defaults.policy_stateful_rule_group_reference, {})
+  policy_stateless_custom_action            = try(each.value.policy_stateless_custom_action, var.defaults.policy_stateless_custom_action, {})
+  policy_stateless_default_actions          = try(each.value.policy_stateless_default_actions, var.defaults.policy_stateless_default_actions, ["aws:pass"])
+  policy_stateless_fragment_default_actions = try(each.value.policy_stateless_fragment_default_actions, var.defaults.policy_stateless_fragment_default_actions, ["aws:pass"])
+  policy_stateless_rule_group_reference     = try(each.value.policy_stateless_rule_group_reference, var.defaults.policy_stateless_rule_group_reference, {})
+  policy_name                               = try(each.value.policy_name, var.defaults.policy_name, "")
+  policy_tags                               = try(each.value.policy_tags, var.defaults.policy_tags, {})
+  create_policy_resource_policy             = try(each.value.create_policy_resource_policy, var.defaults.create_policy_resource_policy, false)
+  policy_resource_policy_actions            = try(each.value.policy_resource_policy_actions, var.defaults.policy_resource_policy_actions, [])
+  policy_resource_policy_principals         = try(each.value.policy_resource_policy_principals, var.defaults.policy_resource_policy_principals, [])
+  policy_attach_resource_policy             = try(each.value.policy_attach_resource_policy, var.defaults.policy_attach_resource_policy, false)
+  policy_resource_policy                    = try(each.value.policy_resource_policy, var.defaults.policy_resource_policy, "")
+  policy_ram_resource_associations          = try(each.value.policy_ram_resource_associations, var.defaults.policy_ram_resource_associations, {})
+}

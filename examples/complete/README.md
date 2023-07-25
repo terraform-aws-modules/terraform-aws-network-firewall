@@ -78,4 +78,4 @@ No inputs.
 | <a name="output_firewall_update_token"></a> [firewall\_update\_token](#output\_firewall\_update\_token) | A string token used when updating a firewall |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
-Apache-2.0 Licensed. See [LICENSE](https://github.com/clowdhaus/terraform-aws-network-firewall/blob/main/LICENSE).
+Apache-2.0 Licensed. See [LICENSE](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/blob/master/LICENSE).

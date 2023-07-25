@@ -4,7 +4,7 @@ Terraform module which creates AWS Network Firewall rule group resources.
 
 ## Usage
 
-See [`examples`](https://github.com/clowdhaus/terraform-aws-network-firewall/tree/main/examples) directory for working examples to reference:
+See [`examples`](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/tree/master/examples) directory for working examples to reference:
 
 ### Stateful
 
@@ -165,4 +165,4 @@ No modules.
 
 ## License
 
-Apache-2.0 Licensed. See [LICENSE](https://github.com/clowdhaus/terraform-aws-network-firewall/blob/main/LICENSE).
+Apache-2.0 Licensed. See [LICENSE](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/blob/master/LICENSE).

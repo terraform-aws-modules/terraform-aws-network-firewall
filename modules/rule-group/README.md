@@ -106,7 +106,7 @@ module "network_firewall_rule_group_stateless" {
 }
 ```
 
-<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -161,7 +161,7 @@ No modules.
 | <a name="output_id"></a> [id](#output\_id) | The Amazon Resource Name (ARN) that identifies the rule group |
 | <a name="output_resource_policy_id"></a> [resource\_policy\_id](#output\_resource\_policy\_id) | The Amazon Resource Name (ARN) of the rule group associated with the resource policy |
 | <a name="output_update_token"></a> [update\_token](#output\_update\_token) | A string token used when updating the rule group |
-<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+<!-- END_TF_DOCS -->
 
 ## License
 

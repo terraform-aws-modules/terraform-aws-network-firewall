@@ -159,6 +159,24 @@ variable "policy_tags" {
   default     = {}
 }
 
+variable "policy_variable_enabled" {
+  description = "Toggle to enable or disable the policy_variables block"
+  type        = bool
+  default     = false
+}
+
+variable "policy_rule_variable_key" {
+  description = "Key for the rule_variables block (e.g., HOME_NET)"
+  type        = string
+  default     = null
+}
+
+variable "policy_rule_variable_definition" {
+  description = "List of IP ranges to include in the rule"
+  type        = list(string)
+  default     = []
+}
+
 # Resource Policy
 variable "create_policy_resource_policy" {
   description = "Controls if a resource policy should be created"

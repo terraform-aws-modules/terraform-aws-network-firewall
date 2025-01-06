@@ -45,6 +45,9 @@ module "policy" {
   stateless_fragment_default_actions = var.policy_stateless_fragment_default_actions
   stateless_rule_group_reference     = var.policy_stateless_rule_group_reference
   name                               = try(coalesce(var.policy_name, var.name), "")
+  policy_variable_enabled            = var.policy_variable_enabled
+  rule_variable_key                  = var.policy_rule_variable_key
+  rule_variable_definition           = var.policy_rule_variable_definition
 
   # Resource policy
   create_resource_policy     = var.create_policy_resource_policy

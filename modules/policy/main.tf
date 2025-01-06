@@ -17,6 +17,20 @@ resource "aws_networkfirewall_firewall_policy" "this" {
   }
 
   firewall_policy {
+
+    # Create the policy_variables
+    dynamic "policy_variables" {
+      for_each = var.policy_variable_enabled ? [1] : []
+      content {
+        rule_variables {
+          key = var.rule_variable_key
+          ip_set {
+            definition = var.rule_variable_definition
+          }
+        }
+      }
+    }
+
     # Stateful
     stateful_default_actions = var.stateful_default_actions
 

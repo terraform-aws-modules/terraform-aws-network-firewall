@@ -74,6 +74,25 @@ variable "name" {
   default     = ""
 }
 
+variable "policy_variable_enabled" {
+  description = "Toggle to enable or disable the policy_variables block"
+  type        = bool
+  default     = false
+}
+
+variable "rule_variable_key" {
+  description = "Key for the rule_variables block (e.g., HOME_NET)"
+  type        = string
+  default     = null
+}
+
+variable "rule_variable_definition" {
+  description = "List of IP ranges to include in the rule"
+  type        = list(string)
+  default     = []
+}
+
+
 ################################################################################
 # Resource Policies
 ################################################################################

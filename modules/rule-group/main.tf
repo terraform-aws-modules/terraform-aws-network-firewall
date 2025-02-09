@@ -26,17 +26,20 @@ resource "aws_networkfirewall_rule_group" "this" {
 
       dynamic "reference_sets" {
         for_each = try([rule_group.value.reference_sets], [])
-        content {
 
+        content {
           dynamic "ip_set_references" {
             # One or more
             for_each = try(reference_sets.value.ip_set_references, [])
+
             content {
               key = ip_set_references.value.key
+
               dynamic "ip_set_reference" {
-                for_each = [ip_set_references.value.ip_set_reference]
+                for_each = [ip_set_references.value.reference_arn]
+                
                 content {
-                  reference_arn = ip_set_reference.value.definition
+                  reference_arn = ip_set_reference.value
                 }
               }
             }

@@ -21,6 +21,7 @@ resource "aws_networkfirewall_firewall" "this" {
   firewall_policy_change_protection = var.firewall_policy_change_protection
   name                              = var.name
   subnet_change_protection          = var.subnet_change_protection
+  enabled_analysis_types            = var.enabled_analysis_types ["TLS_SNI", "HTTP_HOST"]
 
   dynamic "subnet_mapping" {
     for_each = var.subnet_mapping

@@ -26,6 +26,12 @@ variable "description" {
   default     = ""
 }
 
+variable "enabled_analysis_types" {
+  description = "list with possible values TLS_SNI and HTTP_HOST to generate 1 HTTP and 1 HTTPS report monthly with no cost"
+  type        = any
+  default     = []
+}
+
 variable "encryption_configuration" {
   description = "KMS encryption configuration settings"
   type        = any

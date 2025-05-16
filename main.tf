@@ -10,6 +10,7 @@ module "firewall" {
   # Firewall
   delete_protection                 = var.delete_protection
   description                       = var.description
+  enabled_type_analysis             = var.enabled_analysis_types
   encryption_configuration          = var.encryption_configuration
   firewall_policy_arn               = var.create_policy ? module.policy.arn : var.firewall_policy_arn
   firewall_policy_change_protection = var.firewall_policy_change_protection

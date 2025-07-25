@@ -4,6 +4,12 @@ variable "create" {
   default     = true
 }
 
+variable "region" {
+  description = "Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration"
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
@@ -28,8 +34,11 @@ variable "description" {
 
 variable "encryption_configuration" {
   description = "KMS encryption configuration settings"
-  type        = any
-  default     = {}
+  type = object({
+    key_id = optional(string)
+    type   = string
+  })
+  default = null
 }
 
 variable "name" {
@@ -40,8 +49,99 @@ variable "name" {
 
 variable "rule_group" {
   description = "A configuration block that defines the rule group rules. Required unless `rules` is specified"
-  type        = any
-  default     = {}
+  type = object({
+    reference_sets = optional(object({
+      ip_set_references = optional(map(object({
+        reference_arn = string
+      })))
+      key = string
+    }))
+    rules_source = optional(object({
+      rules_source_list = optional(object({
+        generated_rules_type = string
+        target_types         = list(string)
+        targets              = list(string)
+      }))
+      rules_string = optional(string)
+      stateful_rule = optional(list(object({
+        action = string
+        header = object({
+          destination      = string
+          destination_port = string
+          direction        = string
+          protocol         = string
+          source           = string
+          source_port      = string
+        })
+        rule_option = list(object({
+          keyword  = string
+          settings = optional(list(string))
+        }))
+      })))
+      stateless_rules_and_custom_actions = optional(object({
+        custom_action = optional(list(object({
+          action_definition = object({
+            publish_metric_action = object({
+              dimension = list(object({
+                value = string
+              }))
+            })
+          })
+          action_name = string
+        })))
+        stateless_rule = list(object({
+          priority = number
+          rule_definition = object({
+            actions = list(string)
+            match_attributes = object({
+              destination = optional(list(object({
+                address_definition = string
+              })))
+              destination_port = optional(list(object({
+                from_port = string
+                to_port   = optional(string)
+              })))
+              protocols = optional(list(string))
+              source = optional(list(object({
+                address_definition = string
+              })))
+              source_port = optional(list(object({
+                from_port = string
+                to_port   = optional(string)
+              })))
+              tcp_flag = optional(list(object({
+                flags = list(string)
+                masks = optional(list(string))
+              })))
+            })
+          })
+          rule_options = optional(list(object({
+            keyword  = string
+            settings = optional(list(string))
+          })))
+        }))
+      }))
+    }))
+    rule_variables = optional(object({
+      ip_sets = optional(list(object({
+        key = string
+        ip_set = object({
+          defintion = list(string)
+        })
+      })))
+      port_sets = optional(list(object({
+        key = string
+        port_set = object({
+          definition = list(string)
+        })
+      })))
+    }))
+    stateful_rule_options = optional(object({
+      rule_order = optional(string)
+    }))
+  })
+
+  default = null
 }
 
 variable "rules" {

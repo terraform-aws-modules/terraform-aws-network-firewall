@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/compare/v1.0.2...v2.0.0) (2025-07-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* Upgrade min AWS provider and Terraform versions to `6.5` and `1.5.7` respectively (#12)
+
+### Features
+
+* Upgrade min AWS provider and Terraform versions to `6.5` and `1.5.7` respectively ([#12](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/issues/12)) ([92404cc](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/commit/92404cc522273f00fb227e6232e740db16b75fcb))
+
 ## [1.0.2](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/compare/v1.0.1...v1.0.2) (2024-10-11)
 
 

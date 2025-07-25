@@ -23,14 +23,14 @@ Note that this example may create resources which will incur monetary charges on
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.5 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.5 |
 
 ## Modules
 
@@ -43,7 +43,7 @@ Note that this example may create resources which will incur monetary charges on
 | <a name="module_network_firewall_rule_group_disabled"></a> [network\_firewall\_rule\_group\_disabled](#module\_network\_firewall\_rule\_group\_disabled) | ../../modules/rule-group | n/a |
 | <a name="module_network_firewall_rule_group_stateful"></a> [network\_firewall\_rule\_group\_stateful](#module\_network\_firewall\_rule\_group\_stateful) | ../../modules/rule-group | n/a |
 | <a name="module_network_firewall_rule_group_stateless"></a> [network\_firewall\_rule\_group\_stateless](#module\_network\_firewall\_rule\_group\_stateless) | ../../modules/rule-group | n/a |
-| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 5.0 |
+| <a name="module_vpc"></a> [vpc](#module\_vpc) | terraform-aws-modules/vpc/aws | ~> 6.0 |
 
 ## Resources
 

@@ -111,14 +111,14 @@ module "network_firewall_rule_group_stateless" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.5 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.5 |
 
 ## Modules
 
@@ -142,13 +142,14 @@ No modules.
 | <a name="input_create"></a> [create](#input\_create) | Controls if Network Firewall resources should be created | `bool` | `true` | no |
 | <a name="input_create_resource_policy"></a> [create\_resource\_policy](#input\_create\_resource\_policy) | Controls if a resource policy should be created | `bool` | `false` | no |
 | <a name="input_description"></a> [description](#input\_description) | A friendly description of the rule group | `string` | `null` | no |
-| <a name="input_encryption_configuration"></a> [encryption\_configuration](#input\_encryption\_configuration) | KMS encryption configuration settings | `any` | `{}` | no |
+| <a name="input_encryption_configuration"></a> [encryption\_configuration](#input\_encryption\_configuration) | KMS encryption configuration settings | <pre>object({<br/>    key_id = optional(string)<br/>    type   = string<br/>  })</pre> | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | A friendly name of the rule group | `string` | `""` | no |
 | <a name="input_ram_resource_associations"></a> [ram\_resource\_associations](#input\_ram\_resource\_associations) | A map of RAM resource associations for the created rule group | `map(string)` | `{}` | no |
+| <a name="input_region"></a> [region](#input\_region) | Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration | `string` | `null` | no |
 | <a name="input_resource_policy"></a> [resource\_policy](#input\_resource\_policy) | The policy JSON to use for the resource policy; required when `create_resource_policy` is `false` | `string` | `""` | no |
 | <a name="input_resource_policy_actions"></a> [resource\_policy\_actions](#input\_resource\_policy\_actions) | A list of IAM actions allowed in the resource policy | `list(string)` | `[]` | no |
 | <a name="input_resource_policy_principals"></a> [resource\_policy\_principals](#input\_resource\_policy\_principals) | A list of IAM principals allowed in the resource policy | `list(string)` | `[]` | no |
-| <a name="input_rule_group"></a> [rule\_group](#input\_rule\_group) | A configuration block that defines the rule group rules. Required unless `rules` is specified | `any` | `{}` | no |
+| <a name="input_rule_group"></a> [rule\_group](#input\_rule\_group) | A configuration block that defines the rule group rules. Required unless `rules` is specified | <pre>object({<br/>    reference_sets = optional(object({<br/>      ip_set_references = optional(map(object({<br/>        reference_arn = string<br/>      })))<br/>      key = string<br/>    }))<br/>    rules_source = optional(object({<br/>      rules_source_list = optional(object({<br/>        generated_rules_type = string<br/>        target_types         = list(string)<br/>        targets              = list(string)<br/>      }))<br/>      rules_string = optional(string)<br/>      stateful_rule = optional(list(object({<br/>        action = string<br/>        header = object({<br/>          destination      = string<br/>          destination_port = string<br/>          direction        = string<br/>          protocol         = string<br/>          source           = string<br/>          source_port      = string<br/>        })<br/>        rule_option = list(object({<br/>          keyword  = string<br/>          settings = optional(list(string))<br/>        }))<br/>      })))<br/>      stateless_rules_and_custom_actions = optional(object({<br/>        custom_action = optional(list(object({<br/>          action_definition = object({<br/>            publish_metric_action = object({<br/>              dimension = list(object({<br/>                value = string<br/>              }))<br/>            })<br/>          })<br/>          action_name = string<br/>        })))<br/>        stateless_rule = list(object({<br/>          priority = number<br/>          rule_definition = object({<br/>            actions = list(string)<br/>            match_attributes = object({<br/>              destination = optional(list(object({<br/>                address_definition = string<br/>              })))<br/>              destination_port = optional(list(object({<br/>                from_port = string<br/>                to_port   = optional(string)<br/>              })))<br/>              protocols = optional(list(string))<br/>              source = optional(list(object({<br/>                address_definition = string<br/>              })))<br/>              source_port = optional(list(object({<br/>                from_port = string<br/>                to_port   = optional(string)<br/>              })))<br/>              tcp_flag = optional(list(object({<br/>                flags = list(string)<br/>                masks = optional(list(string))<br/>              })))<br/>            })<br/>          })<br/>          rule_options = optional(list(object({<br/>            keyword  = string<br/>            settings = optional(list(string))<br/>          })))<br/>        }))<br/>      }))<br/>    }))<br/>    rule_variables = optional(object({<br/>      ip_sets = optional(list(object({<br/>        key = string<br/>        ip_set = object({<br/>          defintion = list(string)<br/>        })<br/>      })))<br/>      port_sets = optional(list(object({<br/>        key = string<br/>        port_set = object({<br/>          definition = list(string)<br/>        })<br/>      })))<br/>    }))<br/>    stateful_rule_options = optional(object({<br/>      rule_order = optional(string)<br/>    }))<br/>  })</pre> | `null` | no |
 | <a name="input_rules"></a> [rules](#input\_rules) | The stateful rule group rules specifications in Suricata file format, with one rule per line. Use this to import your existing Suricata compatible rule groups. Required unless `rule_group` is specified | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_type"></a> [type](#input\_type) | Whether the rule group is stateless (containing stateless rules) or stateful (containing stateful rules). Valid values include: `STATEFUL` or `STATELESS` | `string` | `"STATELESS"` | no |

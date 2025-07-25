@@ -41,14 +41,14 @@ module "network_firewall_policy" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.5 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.5 |
 
 ## Modules
 
@@ -71,19 +71,21 @@ No modules.
 | <a name="input_create"></a> [create](#input\_create) | Controls if resources should be created | `bool` | `true` | no |
 | <a name="input_create_resource_policy"></a> [create\_resource\_policy](#input\_create\_resource\_policy) | Controls if a resource policy should be created | `bool` | `false` | no |
 | <a name="input_description"></a> [description](#input\_description) | A friendly description of the firewall policy | `string` | `null` | no |
-| <a name="input_encryption_configuration"></a> [encryption\_configuration](#input\_encryption\_configuration) | KMS encryption configuration settings | `any` | `{}` | no |
+| <a name="input_encryption_configuration"></a> [encryption\_configuration](#input\_encryption\_configuration) | KMS encryption configuration settings | <pre>object({<br/>    key_id = optional(string)<br/>    type   = string<br/>  })</pre> | `null` | no |
 | <a name="input_name"></a> [name](#input\_name) | A friendly name of the firewall policy | `string` | `""` | no |
+| <a name="input_policy_variables"></a> [policy\_variables](#input\_policy\_variables) | Contains variables that you can use to override default Suricata settings in your firewall policy | <pre>object({<br/>    rule_variables = list(object({<br/>      ip_set = optional(object({<br/>        definition = list(string)<br/>      }))<br/>      key = string<br/>    }))<br/>  })</pre> | `null` | no |
 | <a name="input_ram_resource_associations"></a> [ram\_resource\_associations](#input\_ram\_resource\_associations) | A map of RAM resource associations for the created firewall policy | `map(string)` | `{}` | no |
+| <a name="input_region"></a> [region](#input\_region) | Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration | `string` | `null` | no |
 | <a name="input_resource_policy"></a> [resource\_policy](#input\_resource\_policy) | The policy JSON to use for the resource policy; required when `create_resource_policy` is `false` | `string` | `""` | no |
 | <a name="input_resource_policy_actions"></a> [resource\_policy\_actions](#input\_resource\_policy\_actions) | A list of IAM actions allowed in the resource policy | `list(string)` | `[]` | no |
 | <a name="input_resource_policy_principals"></a> [resource\_policy\_principals](#input\_resource\_policy\_principals) | A list of IAM principals allowed in the resource policy | `list(string)` | `[]` | no |
 | <a name="input_stateful_default_actions"></a> [stateful\_default\_actions](#input\_stateful\_default\_actions) | Set of actions to take on a packet if it does not match any stateful rules in the policy. This can only be specified if the policy has a `stateful_engine_options` block with a rule\_order value of `STRICT_ORDER`. You can specify one of either or neither values of `aws:drop_strict` or `aws:drop_established`, as well as any combination of `aws:alert_strict` and `aws:alert_established` | `list(string)` | `[]` | no |
-| <a name="input_stateful_engine_options"></a> [stateful\_engine\_options](#input\_stateful\_engine\_options) | A configuration block that defines options on how the policy handles stateful rules. See [Stateful Engine Options](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateful-engine-options) for details | `any` | `{}` | no |
-| <a name="input_stateful_rule_group_reference"></a> [stateful\_rule\_group\_reference](#input\_stateful\_rule\_group\_reference) | Set of configuration blocks containing references to the stateful rule groups that are used in the policy. See [Stateful Rule Group Reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateful-rule-group-reference) for details | `any` | `{}` | no |
-| <a name="input_stateless_custom_action"></a> [stateless\_custom\_action](#input\_stateless\_custom\_action) | Set of configuration blocks describing the custom action definitions that are available for use in the firewall policy's `stateless_default_actions` | `any` | `{}` | no |
+| <a name="input_stateful_engine_options"></a> [stateful\_engine\_options](#input\_stateful\_engine\_options) | A configuration block that defines options on how the policy handles stateful rules. See [Stateful Engine Options](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateful-engine-options) for details | <pre>object({<br/>    flow_timeouts = optional(object({<br/>      tcp_idle_timeout_seconds = optional(number)<br/>    }))<br/>    rule_order              = optional(string)<br/>    stream_exception_policy = optional(string)<br/>  })</pre> | `null` | no |
+| <a name="input_stateful_rule_group_reference"></a> [stateful\_rule\_group\_reference](#input\_stateful\_rule\_group\_reference) | Set of configuration blocks containing references to the stateful rule groups that are used in the policy. See [Stateful Rule Group Reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateful-rule-group-reference) for details | <pre>map(object({<br/>    deep_threat_inspection = optional(bool)<br/>    override = optional(object({<br/>      action = optional(string)<br/>    }))<br/>    priority     = optional(number)<br/>    resource_arn = string<br/>  }))</pre> | `null` | no |
+| <a name="input_stateless_custom_action"></a> [stateless\_custom\_action](#input\_stateless\_custom\_action) | Set of configuration blocks describing the custom action definitions that are available for use in the firewall policy's `stateless_default_actions` | <pre>map(object({<br/>    action_definition = object({<br/>      publish_metric_action = optional(object({<br/>        dimension = optional(string)<br/>      }))<br/>    })<br/>    action_name = string<br/>  }))</pre> | `null` | no |
 | <a name="input_stateless_default_actions"></a> [stateless\_default\_actions](#input\_stateless\_default\_actions) | Set of actions to take on a packet if it does not match any of the stateless rules in the policy. You must specify one of the standard actions including: `aws:drop`, `aws:pass`, or `aws:forward_to_sfe` | `list(string)` | <pre>[<br/>  "aws:pass"<br/>]</pre> | no |
 | <a name="input_stateless_fragment_default_actions"></a> [stateless\_fragment\_default\_actions](#input\_stateless\_fragment\_default\_actions) | Set of actions to take on a fragmented packet if it does not match any of the stateless rules in the policy. You must specify one of the standard actions including: `aws:drop`, `aws:pass`, or `aws:forward_to_sfe` | `list(string)` | <pre>[<br/>  "aws:pass"<br/>]</pre> | no |
-| <a name="input_stateless_rule_group_reference"></a> [stateless\_rule\_group\_reference](#input\_stateless\_rule\_group\_reference) | Set of configuration blocks containing references to the stateless rule groups that are used in the policy. See [Stateless Rule Group Reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateless-rule-group-reference) for details | `any` | `{}` | no |
+| <a name="input_stateless_rule_group_reference"></a> [stateless\_rule\_group\_reference](#input\_stateless\_rule\_group\_reference) | Set of configuration blocks containing references to the stateless rule groups that are used in the policy. See [Stateless Rule Group Reference](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/networkfirewall_firewall_policy#stateless-rule-group-reference) for details | <pre>map(object({<br/>    priority     = number<br/>    resource_arn = string<br/>  }))</pre> | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 
 ## Outputs

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.1](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/compare/v2.0.0...v2.0.1) (2025-07-28)
+
+
+### Bug Fixes
+
+* Spelling mistake of `var.rule_group` type definition  ([#14](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/issues/14)) ([4e7fdfc](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/commit/4e7fdfcc05ee679eb1926cc1477f5f7ed04e34ad))
+
 ## [2.0.0](https://github.com/terraform-aws-modules/terraform-aws-network-firewall/compare/v1.0.2...v2.0.0) (2025-07-25)
 
 

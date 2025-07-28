@@ -126,7 +126,7 @@ variable "rule_group" {
       ip_sets = optional(list(object({
         key = string
         ip_set = object({
-          defintion = list(string)
+          definition = list(string)
         })
       })))
       port_sets = optional(list(object({

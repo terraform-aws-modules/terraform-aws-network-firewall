@@ -30,7 +30,7 @@ resource "aws_networkfirewall_rule_group" "this" {
 
         content {
           dynamic "ip_set_references" {
-            for_each = reference_sets.value.ip_set_references != null ? reference_sets.value.ip_set_references : []
+            for_each = reference_sets.value.ip_set_references != null ? reference_sets.value.ip_set_references : {}
 
             content {
               dynamic "ip_set_reference" {

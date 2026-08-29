@@ -38,6 +38,7 @@ module "wrapper" {
   policy_tls_inspection_configuration_arn   = try(each.value.policy_tls_inspection_configuration_arn, var.defaults.policy_tls_inspection_configuration_arn, null)
   policy_variables                          = try(each.value.policy_variables, var.defaults.policy_variables, null)
   region                                    = try(each.value.region, var.defaults.region, null)
+  routing_configuration                     = try(each.value.routing_configuration, var.defaults.routing_configuration, null)
   subnet_change_protection                  = try(each.value.subnet_change_protection, var.defaults.subnet_change_protection, true)
   subnet_mapping                            = try(each.value.subnet_mapping, var.defaults.subnet_mapping, null)
   tags                                      = try(each.value.tags, var.defaults.tags, {})

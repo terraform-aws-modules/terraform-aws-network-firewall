@@ -296,3 +296,52 @@ variable "policy_ram_resource_associations" {
   type        = map(string)
   default     = null
 }
+
+################################################################################
+# Routing
+################################################################################
+
+variable "routing_configuration" {
+  description = "Routing to create so that traffic actually reaches the firewall. Exactly one architecture may be configured. The firewall endpoint serving each availability zone is resolved by the module, so callers do not need to read it out of `status`"
+  type = object({
+    # Inspection of traffic entering and leaving a single VPC through an internet gateway
+    single_vpc = optional(object({
+      # Route table associated with the internet gateway, which must be dedicated to the
+      # gateway and associated with no subnet. Omit to route outbound traffic only
+      igw_route_table = optional(string)
+      # Availability zone to the route table of the protected subnet in that zone
+      protected_subnet_route_tables = optional(map(string), {})
+      # Availability zone to the CIDR block of the protected subnet in that zone, used
+      # for the return routes on the internet gateway's route table
+      protected_subnet_cidr_blocks = optional(map(string), {})
+      # Destination for the outbound route
+      destination_cidr_block = optional(string, "0.0.0.0/0")
+    }))
+    # Inspection of traffic between subnets in the same VPC, using routes more specific
+    # than the local route
+    intra_vpc_inspection = optional(object({
+      routes = optional(map(object({
+        route_table_id              = string
+        destination_ipv4_cidr_block = optional(string)
+        destination_ipv6_cidr_block = optional(string)
+        # Which zone's endpoint to send this traffic to, normally the zone the source
+        # subnet is in so that traffic stays in zone
+        availability_zone = string
+      })), {})
+    }))
+  })
+  default = null
+
+  validation {
+    condition     = var.routing_configuration == null ? true : length([for k, v in var.routing_configuration : k if v != null]) <= 1
+    error_message = "Only one architecture may be configured in `routing_configuration`."
+  }
+
+  validation {
+    condition = try(var.routing_configuration.single_vpc, null) == null ? true : (
+      try(var.routing_configuration.single_vpc.igw_route_table, null) == null ||
+      length(var.routing_configuration.single_vpc.protected_subnet_cidr_blocks) > 0
+    )
+    error_message = "`protected_subnet_cidr_blocks` is required when `igw_route_table` is set, because the internet gateway needs a route per protected subnet."
+  }
+}

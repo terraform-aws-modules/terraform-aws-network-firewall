@@ -70,3 +70,61 @@ module "policy" {
 
   tags = merge(var.tags, var.policy_tags)
 }
+
+################################################################################
+# Routing
+#
+# A firewall only inspects traffic that is routed through it, and working out those
+# routes means knowing which endpoint serves which availability zone. That mapping is
+# only available inside the firewall's status, so callers otherwise have to reach into
+# the raw resource shape to build it themselves
+################################################################################
+
+locals {
+  # Availability zone to firewall endpoint. Values are only known after apply, so this
+  # is used to look endpoints up, never to decide how many resources to create
+  endpoints = {
+    for state in flatten(try(module.firewall.status[*].sync_states, [])) :
+    state.availability_zone => state.attachment[0].endpoint_id
+  }
+
+  single_vpc           = try(var.routing_configuration.single_vpc, null)
+  intra_vpc_inspection = try(var.routing_configuration.intra_vpc_inspection, null)
+}
+
+# Traffic leaving a protected subnet reaches the firewall in its own availability zone
+resource "aws_route" "protected_subnet_to_firewall" {
+  for_each = { for az, rt in try(local.single_vpc.protected_subnet_route_tables, {}) : az => rt if var.create }
+
+  region = var.region
+
+  route_table_id         = each.value
+  destination_cidr_block = local.single_vpc.destination_cidr_block
+  vpc_endpoint_id        = local.endpoints[each.key]
+}
+
+# Traffic arriving from the internet reaches the firewall before the protected subnet.
+# Without this the firewall sees only one direction of each flow, which a stateful engine
+# cannot evaluate, and nothing about the configuration looks wrong
+resource "aws_route" "igw_to_firewall" {
+  for_each = { for az, cidr in try(local.single_vpc.protected_subnet_cidr_blocks, {}) : az => cidr if var.create && try(local.single_vpc.igw_route_table, null) != null }
+
+  region = var.region
+
+  route_table_id         = local.single_vpc.igw_route_table
+  destination_cidr_block = each.value
+  vpc_endpoint_id        = local.endpoints[each.key]
+}
+
+# Traffic between two subnets in the same VPC, sent through the firewall by a route more
+# specific than the local route
+resource "aws_route" "intra_vpc_inspection" {
+  for_each = { for k, v in try(local.intra_vpc_inspection.routes, {}) : k => v if var.create }
+
+  region = var.region
+
+  route_table_id              = each.value.route_table_id
+  destination_cidr_block      = each.value.destination_ipv4_cidr_block
+  destination_ipv6_cidr_block = each.value.destination_ipv6_cidr_block
+  vpc_endpoint_id             = local.endpoints[each.value.availability_zone]
+}

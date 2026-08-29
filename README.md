@@ -94,10 +94,13 @@ Examples codified under the [`examples`](https://github.com/terraform-aws-module
 | Name | Version |
 | ---- | ------- |
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.7 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.28 |
 
 ## Providers
 
-No providers.
+| Name | Version |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.28 |
 
 ## Modules
 
@@ -108,7 +111,11 @@ No providers.
 
 ## Resources
 
-No resources.
+| Name | Type |
+| ---- | ---- |
+| [aws_route.igw_to_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.intra_vpc_inspection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
+| [aws_route.protected_subnet_to_firewall](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route) | resource |
 
 ## Inputs
 
@@ -149,6 +156,7 @@ No resources.
 | <a name="input_policy_tls_inspection_configuration_arn"></a> [policy\_tls\_inspection\_configuration\_arn](#input\_policy\_tls\_inspection\_configuration\_arn) | The ARN of the TLS inspection configuration to associate with the firewall policy | `string` | `null` | no |
 | <a name="input_policy_variables"></a> [policy\_variables](#input\_policy\_variables) | Contains variables that you can use to override default Suricata settings in your firewall policy | <pre>object({<br/>    rule_variables = list(object({<br/>      ip_set = optional(object({<br/>        definition = list(string)<br/>      }))<br/>      key = string<br/>    }))<br/>  })</pre> | `null` | no |
 | <a name="input_region"></a> [region](#input\_region) | Region where the resource(s) will be managed. Defaults to the Region set in the provider configuration | `string` | `null` | no |
+| <a name="input_routing_configuration"></a> [routing\_configuration](#input\_routing\_configuration) | Routing to create so that traffic actually reaches the firewall. Exactly one architecture may be configured. The firewall endpoint serving each availability zone is resolved by the module, so callers do not need to read it out of `status` | <pre>object({<br/>    # Inspection of traffic entering and leaving a single VPC through an internet gateway<br/>    single_vpc = optional(object({<br/>      # Route table associated with the internet gateway, which must be dedicated to the<br/>      # gateway and associated with no subnet. Omit to route outbound traffic only<br/>      igw_route_table = optional(string)<br/>      # Availability zone to the route table of the protected subnet in that zone<br/>      protected_subnet_route_tables = optional(map(string), {})<br/>      # Availability zone to the CIDR block of the protected subnet in that zone, used<br/>      # for the return routes on the internet gateway's route table<br/>      protected_subnet_cidr_blocks = optional(map(string), {})<br/>      # Destination for the outbound route<br/>      destination_cidr_block = optional(string, "0.0.0.0/0")<br/>    }))<br/>    # Inspection of traffic between subnets in the same VPC, using routes more specific<br/>    # than the local route<br/>    intra_vpc_inspection = optional(object({<br/>      routes = optional(map(object({<br/>        route_table_id              = string<br/>        destination_ipv4_cidr_block = optional(string)<br/>        destination_ipv6_cidr_block = optional(string)<br/>        # Which zone's endpoint to send this traffic to, normally the zone the source<br/>        # subnet is in so that traffic stays in zone<br/>        availability_zone = string<br/>      })), {})<br/>    }))<br/>  })</pre> | `null` | no |
 | <a name="input_subnet_change_protection"></a> [subnet\_change\_protection](#input\_subnet\_change\_protection) | A boolean flag indicating whether it is possible to change the associated subnet(s). Defaults to `true` | `bool` | `true` | no |
 | <a name="input_subnet_mapping"></a> [subnet\_mapping](#input\_subnet\_mapping) | Set of configuration blocks describing the public subnets. Each subnet must belong to a different Availability Zone in the VPC. AWS Network Firewall creates a firewall endpoint in each subnet | <pre>map(object({<br/>    ip_address_type = optional(string)<br/>    subnet_id       = string<br/>  }))</pre> | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
@@ -160,12 +168,14 @@ No resources.
 | Name | Description |
 | ---- | ----------- |
 | <a name="output_arn"></a> [arn](#output\_arn) | The Amazon Resource Name (ARN) that identifies the firewall |
+| <a name="output_endpoints"></a> [endpoints](#output\_endpoints) | Map of availability zone to the firewall endpoint serving that zone. Use this to write your own routes rather than reading the nested `status` structure |
 | <a name="output_id"></a> [id](#output\_id) | The Amazon Resource Name (ARN) that identifies the firewall |
 | <a name="output_logging_configuration_id"></a> [logging\_configuration\_id](#output\_logging\_configuration\_id) | The Amazon Resource Name (ARN) of the associated firewall |
 | <a name="output_policy_arn"></a> [policy\_arn](#output\_policy\_arn) | The Amazon Resource Name (ARN) that identifies the firewall policy |
 | <a name="output_policy_id"></a> [policy\_id](#output\_policy\_id) | The Amazon Resource Name (ARN) that identifies the firewall policy |
 | <a name="output_policy_resource_policy_id"></a> [policy\_resource\_policy\_id](#output\_policy\_resource\_policy\_id) | The Amazon Resource Name (ARN) of the firewall policy associated with the resource policy |
 | <a name="output_policy_update_token"></a> [policy\_update\_token](#output\_policy\_update\_token) | A string token used when updating a firewall policy |
+| <a name="output_routes"></a> [routes](#output\_routes) | Map of the routes created by `routing_configuration` |
 | <a name="output_status"></a> [status](#output\_status) | Nested list of information about the current status of the firewall |
 | <a name="output_update_token"></a> [update\_token](#output\_update\_token) | A string token used when updating a firewall |
 <!-- END_TF_DOCS -->

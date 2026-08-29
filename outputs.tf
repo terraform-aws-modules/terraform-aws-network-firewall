@@ -54,3 +54,21 @@ output "policy_resource_policy_id" {
   description = "The Amazon Resource Name (ARN) of the firewall policy associated with the resource policy"
   value       = module.policy.resource_policy_id
 }
+
+################################################################################
+# Routing
+################################################################################
+
+output "endpoints" {
+  description = "Map of availability zone to the firewall endpoint serving that zone. Use this to write your own routes rather than reading the nested `status` structure"
+  value       = local.endpoints
+}
+
+output "routes" {
+  description = "Map of the routes created by `routing_configuration`"
+  value = merge(
+    aws_route.protected_subnet_to_firewall,
+    aws_route.igw_to_firewall,
+    aws_route.intra_vpc_inspection,
+  )
+}
